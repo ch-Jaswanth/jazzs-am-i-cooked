@@ -199,7 +199,7 @@ function Index() {
 
             {/* Syllabus */}
             <Field icon="📚" label="Syllabus Progress" message={syllabusMessage(syllabusPct)}>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <NumberInput
                   label="Total chapters"
                   value={inputs.totalChapters}
