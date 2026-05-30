@@ -199,18 +199,18 @@ function Index() {
 
             {/* Syllabus */}
             <Field icon="📚" label="Syllabus Progress" message={syllabusMessage(syllabusPct)}>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <NumberInput
-                  label="Total chapters"
-                  value={inputs.totalChapters}
-                  onChange={(v) => update("totalChapters", v)}
-                  min={1}
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <NumberInput
                   label="Completed"
                   value={inputs.chaptersDone}
                   onChange={(v) => update("chaptersDone", v)}
                   min={0}
+                />
+                <NumberInput
+                  label="Total chapters"
+                  value={inputs.totalChapters}
+                  onChange={(v) => update("totalChapters", v)}
+                  min={1}
                 />
               </div>
               <div className="mt-4">
