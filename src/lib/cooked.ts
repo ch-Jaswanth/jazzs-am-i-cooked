@@ -147,22 +147,37 @@ export function computeResult(input: Inputs): Result {
       ? Math.min(100, Math.round((input.chaptersDone / input.totalChapters) * 100))
       : 0;
 
-  // Cookedness 0 (fine) → 100 (toast)
-  const attComp = 100 - input.attendance; // low attendance = more cooked
-  const sylComp = 100 - syllabusPct;
-  const dayComp = Math.max(0, 100 - Math.min(input.daysUntilExam, 30) * (100 / 30));
-  const asgComp = Math.min(100, input.assignments * 12);
-  const reelComp = REELS_WEIGHT[input.reels];
-  const confComp = Math.max(0, input.confidence - 50) * 0.4; // overconfidence penalty
+  // 1. Attendance
+  const attendanceCooked = 100 - input.attendance;
+  const attendanceScore = attendanceCooked * 0.25;
+
+  // 2. Syllabus
+  const syllabusCooked = 100 - syllabusPct;
+  const syllabusScore = syllabusCooked * 0.35;
+
+  // 3. Assignments (max 10 considered)
+  const assignmentCooked = Math.min(100, (input.assignments / 10) * 100);
+  const assignmentScore = assignmentCooked * 0.15;
+
+  // 4. Reels
+  const reelsCookedMap: Record<ReelsBucket, number> = {
+    "0-30": 0,
+    "30-60": 20,
+    "1-2": 40,
+    "2-4": 70,
+    "4+": 100,
+  };
+  const reelsCooked = reelsCookedMap[input.reels];
+  const reelsScore = reelsCooked * 0.10;
+
+  // 5. Confidence — only false confidence is punished
+  const assignmentCompletion = 100 - assignmentCooked;
+  const preparationScore = (input.attendance + syllabusPct + assignmentCompletion) / 3;
+  const confidenceGap = Math.max(0, input.confidence - preparationScore);
+  const confidenceScore = confidenceGap * 0.15;
 
   const raw =
-    attComp * 0.22 +
-    sylComp * 0.28 +
-    dayComp * 0.18 +
-    asgComp * 0.12 +
-    reelComp * 0.15 +
-    confComp * 0.05;
-
+    attendanceScore + syllabusScore + assignmentScore + reelsScore + confidenceScore;
   const score = Math.max(0, Math.min(100, Math.round(raw)));
 
   const level =
@@ -171,19 +186,17 @@ export function computeResult(input: Inputs): Result {
     score <= 60 ? LEVELS[2] :
     score <= 80 ? LEVELS[3] : LEVELS[4];
 
-  // Rank: more cooked = worse rank (higher number)
   const totalStudents = 10000;
-  const percentile = score; // % of people you are more cooked than (roughly)
+  const percentile = score;
   const rank = Math.max(1, Math.round(totalStudents * (1 - score / 100) + Math.random() * 50));
 
-  // Cause of death — pick the worst factor
+  // Cause of death — metric contributing most cooked points
   const factors: { label: string; weight: number }[] = [
-    { label: "Reels Overdose", weight: reelComp },
-    { label: "Syllabus Avoidance", weight: sylComp },
-    { label: "Chronic Absenteeism", weight: attComp },
-    { label: "Time Mismanagement", weight: dayComp },
-    { label: "Assignment Backlog", weight: asgComp },
-    { label: "Delusional Confidence", weight: confComp * 4 },
+    { label: "Poor Attendance", weight: attendanceScore },
+    { label: "Low Syllabus Completion", weight: syllabusScore },
+    { label: "Assignment Neglect", weight: assignmentScore },
+    { label: "Reels Addiction", weight: reelsScore },
+    { label: "False Confidence", weight: confidenceScore },
   ];
   factors.sort((a, b) => b.weight - a.weight);
   const causeOfDeath = score < 20 ? "Excessive Wellbeing" : factors[0].label;
