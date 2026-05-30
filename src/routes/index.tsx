@@ -5,6 +5,7 @@ import { Embers } from "@/components/Embers";
 import { Gauge } from "@/components/Gauge";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { ShareCard } from "@/components/ShareCard";
+import { DeveloperLog } from "@/components/DeveloperLog";
 import {
   computeResult,
   personalizedRoast,
@@ -55,8 +56,20 @@ function Index() {
   const [result, setResult] = useState<Result | null>(null);
   const [shake, setShake] = useState(false);
   const [chapterError, setChapterError] = useState<string | null>(null);
+  const [devLogOpen, setDevLogOpen] = useState(false);
+  const [devLogSeen, setDevLogSeen] = useState(false);
   const formRef = useRef<HTMLDivElement>(null);
   const resultRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (inputs.totalChapters === 143 && !devLogSeen) {
+      setDevLogOpen(true);
+      setDevLogSeen(true);
+    }
+    if (inputs.totalChapters !== 143 && devLogSeen) {
+      setDevLogSeen(false);
+    }
+  }, [inputs.totalChapters, devLogSeen]);
 
   const update = <K extends keyof Inputs>(k: K, v: Inputs[K]) =>
     setInputs((p) => ({ ...p, [k]: v }));
@@ -114,6 +127,7 @@ function Index() {
       <Embers />
 
       {stage === "loading" && <LoadingOverlay onDone={handleLoadingDone} />}
+      {devLogOpen && <DeveloperLog onClose={() => setDevLogOpen(false)} />}
 
       <div className="relative z-10">
         {/* NAV */}
