@@ -415,13 +415,13 @@ function NumberInput({
   label?: string;
 }) {
   return (
-    <label className="block">
+    <label className="block min-w-0">
       {label && <span className="block text-[0.65rem] uppercase tracking-wider text-muted-foreground mb-1.5">{label}</span>}
-      <div className="flex items-center gap-2">
+      <div className="grid grid-cols-[2.5rem_minmax(0,1fr)_2.5rem] items-center gap-2">
         <button
           type="button"
           onClick={() => onChange(Math.max(min, value - 1))}
-          className="h-10 w-10 rounded-xl glass-strong text-lg hover:bg-white/5 transition shrink-0"
+          className="h-10 w-10 rounded-xl glass-strong text-lg hover:bg-white/5 transition"
         >
           −
         </button>
@@ -430,12 +430,12 @@ function NumberInput({
           value={value}
           min={min}
           onChange={(e) => onChange(Math.max(min, parseInt(e.target.value) || 0))}
-          className="flex-1 h-10 px-3 rounded-xl bg-input border border-border text-center font-display font-semibold text-lg focus:outline-none focus:border-accent transition"
+          className="h-10 w-full min-w-0 px-2 rounded-xl bg-input border border-border text-center font-display font-semibold text-lg focus:outline-none focus:border-accent transition"
         />
         <button
           type="button"
           onClick={() => onChange(value + 1)}
-          className="h-10 w-10 rounded-xl glass-strong text-lg hover:bg-white/5 transition shrink-0"
+          className="h-10 w-10 rounded-xl glass-strong text-lg hover:bg-white/5 transition"
         >
           +
         </button>
