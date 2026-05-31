@@ -63,8 +63,21 @@ function Index() {
   const [chapterError, setChapterError] = useState<string | null>(null);
   const [devLogOpen, setDevLogOpen] = useState(false);
   const [devLogSeen, setDevLogSeen] = useState(false);
+  const [showStickyCTA, setShowStickyCTA] = useState(false);
+  const [confettiOn, setConfettiOn] = useState(false);
   const formRef = useRef<HTMLDivElement>(null);
   const resultRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!heroRef.current) return;
+    const io = new IntersectionObserver(
+      ([entry]) => setShowStickyCTA(!entry.isIntersecting && stage !== "result"),
+      { threshold: 0 },
+    );
+    io.observe(heroRef.current);
+    return () => io.disconnect();
+  }, [stage]);
 
   useEffect(() => {
     if (inputs.totalChapters === 143 && !devLogSeen) {
