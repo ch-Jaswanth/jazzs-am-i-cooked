@@ -137,6 +137,9 @@ function Index() {
               🍳
             </div>
             <span className="font-display font-bold text-lg">Am I Cooked?</span>
+            <span className="text-[0.6rem] sm:text-xs font-bold uppercase tracking-[0.15em] px-2 py-0.5 rounded-full border border-accent/40 text-accent bg-accent/5">
+              Jazz Edition
+            </span>
           </div>
           <div className="hidden sm:flex items-center gap-2 text-xs text-muted-foreground glass px-3 py-1.5 rounded-full">
             <span className="h-1.5 w-1.5 rounded-full bg-green-400 animate-pulse" />
