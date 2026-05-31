@@ -6,6 +6,11 @@ import { Gauge } from "@/components/Gauge";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { ShareCard } from "@/components/ShareCard";
 import { DeveloperLog } from "@/components/DeveloperLog";
+import { LiveCounter } from "@/components/LiveCounter";
+import { Testimonials } from "@/components/Testimonials";
+import { FloatingChips } from "@/components/FloatingChips";
+import { JazzSeal } from "@/components/JazzSeal";
+import { Confetti } from "@/components/Confetti";
 import {
   computeResult,
   personalizedRoast,
