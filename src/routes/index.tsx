@@ -184,7 +184,7 @@ function Index() {
               <h1 className="text-5xl sm:text-7xl md:text-8xl font-bold tracking-tighter font-display leading-[0.95]">
                 <span className="hidden sm:inline-block mr-3 align-middle">🍳</span>
                 <span className="text-gradient-fire">AM I </span>
-                <span className="text-gradient-fire flame-underline">COOKED?</span>
+                <span className="text-gradient-fire">COOKED?</span>
               </h1>
             </div>
 
