@@ -239,11 +239,14 @@ function Index() {
 
         {/* FORM */}
         <section ref={formRef} className="px-6 pb-24 max-w-3xl mx-auto scroll-mt-10">
-          <div className="text-center mb-10">
-            <div className="text-xs font-bold uppercase tracking-[0.2em] text-accent">Step 1 of 1</div>
+          <div className="text-center mb-8">
+            <div className="text-xs font-bold uppercase tracking-[0.2em] text-accent">The Interrogation</div>
             <h2 className="mt-3 text-3xl sm:text-4xl font-bold font-display">Tell Jazz everything.</h2>
             <p className="mt-2 text-sm text-muted-foreground">Be honest. He'll find out anyway.</p>
           </div>
+
+          <FormProgress steps={["🎓", "📚", "⏳", "📝", "📱", "😎"]} />
+
 
           <div className="space-y-5">
             {/* Attendance */}
