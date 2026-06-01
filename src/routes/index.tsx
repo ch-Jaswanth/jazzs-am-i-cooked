@@ -6,6 +6,11 @@ import { Gauge } from "@/components/Gauge";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { ShareCard } from "@/components/ShareCard";
 import { DeveloperLog } from "@/components/DeveloperLog";
+import { LiveCounter } from "@/components/LiveCounter";
+import { Testimonials } from "@/components/Testimonials";
+import { FloatingChips } from "@/components/FloatingChips";
+import { JazzSeal } from "@/components/JazzSeal";
+import { Confetti } from "@/components/Confetti";
 import {
   computeResult,
   personalizedRoast,
@@ -58,8 +63,21 @@ function Index() {
   const [chapterError, setChapterError] = useState<string | null>(null);
   const [devLogOpen, setDevLogOpen] = useState(false);
   const [devLogSeen, setDevLogSeen] = useState(false);
+  const [showStickyCTA, setShowStickyCTA] = useState(false);
+  const [confettiOn, setConfettiOn] = useState(false);
   const formRef = useRef<HTMLDivElement>(null);
   const resultRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!heroRef.current) return;
+    const io = new IntersectionObserver(
+      ([entry]) => setShowStickyCTA(!entry.isIntersecting && stage !== "result"),
+      { threshold: 0 },
+    );
+    io.observe(heroRef.current);
+    return () => io.disconnect();
+  }, [stage]);
 
   useEffect(() => {
     if (inputs.totalChapters === 143 && !devLogSeen) {
@@ -99,6 +117,8 @@ function Index() {
     const r = computeResult(inputs);
     setResult(r);
     setStage("result");
+    setConfettiOn(true);
+    setTimeout(() => setConfettiOn(false), 3200);
     setTimeout(() => resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
   };
 
@@ -128,6 +148,7 @@ function Index() {
 
       {stage === "loading" && <LoadingOverlay onDone={handleLoadingDone} />}
       {devLogOpen && <DeveloperLog onClose={() => setDevLogOpen(false)} />}
+      {confettiOn && <Confetti />}
 
       <div className="relative z-10">
         {/* NAV */}
@@ -148,58 +169,84 @@ function Index() {
         </header>
 
         {/* HERO */}
-        <section className="px-6 pt-12 pb-20 sm:pt-20 sm:pb-32 max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full glass text-xs font-medium text-muted-foreground mb-6 animate-fade-in">
-            <Sparkles className="h-3 w-3" /> Trusted by 0 universities worldwide
-          </div>
-          <h1 className="text-5xl sm:text-7xl md:text-8xl font-bold tracking-tighter font-display leading-[0.95]">
-            <span className="inline-block mr-2">🍳</span>
-            <span className="text-gradient-fire">AM I COOKED?</span>
-          </h1>
-          <p className="mt-6 text-lg sm:text-xl text-foreground/80 max-w-2xl mx-auto">
-            Find out how close you are to academic extinction.
-          </p>
-          <p className="mt-2 text-sm text-muted-foreground max-w-2xl mx-auto">
-            The internet's most scientifically inaccurate academic survival predictor.
-          </p>
+        <section ref={heroRef} className="relative px-6 pt-8 pb-20 sm:pt-16 sm:pb-32 max-w-4xl mx-auto text-center">
+          <div className="mesh-bg" />
+          <FloatingChips />
 
-          <div className="mt-10 flex flex-col items-center gap-4">
+          <div className="relative">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full glass text-xs font-medium text-muted-foreground mb-6 mt-10 sm:mt-14 animate-fade-in">
+              <Sparkles className="h-3 w-3" /> Trusted by 0 universities worldwide
+            </div>
+
+            <div className="flex flex-col items-center gap-3 sm:gap-4">
+              <div className="text-6xl sm:hidden animate-fade-in" aria-hidden>🍳</div>
+
+              <h1 className="text-5xl sm:text-7xl md:text-8xl font-bold tracking-tighter font-display leading-[0.95]">
+                <span className="hidden sm:inline-block mr-3 align-middle">🍳</span>
+                <span className="text-gradient-fire">AM I </span>
+                <span className="text-gradient-fire flame-underline">COOKED?</span>
+              </h1>
+            </div>
+
+            <p className="mt-6 text-lg sm:text-xl text-foreground/80 max-w-2xl mx-auto">
+              Find out how close you are to academic extinction.
+            </p>
+            <p className="mt-2 text-sm text-muted-foreground max-w-2xl mx-auto">
+              The internet's most scientifically inaccurate academic survival predictor.
+            </p>
+
+            <div className="mt-8 flex items-center justify-center gap-5 sm:gap-6">
+              <JazzSeal />
+              <button
+                onClick={() => formRef.current?.scrollIntoView({ behavior: "smooth" })}
+                className="btn-fire px-7 py-4 sm:px-8 sm:py-4 rounded-2xl text-base inline-flex items-center gap-2"
+              >
+                <Flame className="h-5 w-5" /> CHECK STATUS
+              </button>
+            </div>
+
             <button
               onClick={() => formRef.current?.scrollIntoView({ behavior: "smooth" })}
-              className="btn-fire px-8 py-4 rounded-2xl text-base inline-flex items-center gap-2"
+              aria-label="Scroll down"
+              className="mt-8 mx-auto block text-muted-foreground hover:text-foreground transition"
             >
-              <Flame className="h-5 w-5" /> CHECK STATUS
+              <ChevronDown className="h-6 w-6 bounce-soft" />
             </button>
-            <button
-              onClick={() => formRef.current?.scrollIntoView({ behavior: "smooth" })}
-              className="text-xs text-muted-foreground inline-flex items-center gap-1 hover:text-foreground transition"
-            >
-              Scroll <ChevronDown className="h-3 w-3 animate-bounce" />
-            </button>
-          </div>
 
-          {/* Stat strip */}
-          <div className="mt-20 grid grid-cols-3 gap-4 max-w-2xl mx-auto">
-            {[
-              { v: "10,000+", l: "Students Cooked" },
-              { v: "97.5%", l: "Verdict Accuracy*" },
-              { v: "0", l: "Lives Saved" },
-            ].map((s) => (
-              <div key={s.l} className="glass rounded-2xl p-4 sm:p-5">
-                <div className="text-2xl sm:text-3xl font-bold text-gradient-fire font-display">{s.v}</div>
-                <div className="text-[0.65rem] sm:text-xs uppercase tracking-wider text-muted-foreground mt-1">{s.l}</div>
+            {/* Stat strip */}
+            <div className="mt-16 grid grid-cols-3 gap-3 sm:gap-4 max-w-2xl mx-auto">
+              <div className="glass rounded-2xl p-4 sm:p-5">
+                <div className="text-2xl sm:text-3xl font-bold text-gradient-fire font-display">
+                  <LiveCounter />
+                </div>
+                <div className="text-[0.6rem] sm:text-xs uppercase tracking-wider text-muted-foreground mt-1">
+                  Students Cooked Today
+                </div>
               </div>
-            ))}
+              <div className="glass rounded-2xl p-4 sm:p-5">
+                <div className="text-2xl sm:text-3xl font-bold text-gradient-fire font-display">97.5%</div>
+                <div className="text-[0.6rem] sm:text-xs uppercase tracking-wider text-muted-foreground mt-1">Verdict Accuracy*</div>
+              </div>
+              <div className="glass rounded-2xl p-4 sm:p-5">
+                <div className="text-2xl sm:text-3xl font-bold text-gradient-fire font-display">0</div>
+                <div className="text-[0.6rem] sm:text-xs uppercase tracking-wider text-muted-foreground mt-1">Lives Saved</div>
+              </div>
+            </div>
+
+            <Testimonials />
           </div>
         </section>
 
         {/* FORM */}
         <section ref={formRef} className="px-6 pb-24 max-w-3xl mx-auto scroll-mt-10">
-          <div className="text-center mb-10">
-            <div className="text-xs font-bold uppercase tracking-[0.2em] text-accent">Step 1 of 1</div>
+          <div className="text-center mb-8">
+            <div className="text-xs font-bold uppercase tracking-[0.2em] text-accent">The Interrogation</div>
             <h2 className="mt-3 text-3xl sm:text-4xl font-bold font-display">Tell Jazz everything.</h2>
             <p className="mt-2 text-sm text-muted-foreground">Be honest. He'll find out anyway.</p>
           </div>
+
+          <FormProgress steps={["🎓", "📚", "⏳", "📝", "📱", "😎"]} />
+
 
           <div className="space-y-5">
             {/* Attendance */}
@@ -384,10 +431,41 @@ function Index() {
         )}
 
         {/* FOOTER */}
-        <footer className="px-6 py-10 border-t border-border text-center text-xs text-muted-foreground">
+        <footer className="px-6 py-10 pb-28 sm:pb-10 border-t border-border text-center text-xs text-muted-foreground">
           <p>Built with caffeine, regret, and zero academic credentials.</p>
           <p className="mt-1">Not affiliated with any university, exam board, or Jazz himself.</p>
         </footer>
+      </div>
+
+      {/* Sticky mobile CTA */}
+      {showStickyCTA && stage === "form" && (
+        <div className="fixed bottom-4 inset-x-4 z-40 sm:hidden animate-fade-in">
+          <button
+            onClick={() => formRef.current?.scrollIntoView({ behavior: "smooth" })}
+            className="btn-fire w-full py-4 rounded-2xl text-sm inline-flex items-center justify-center gap-2"
+          >
+            <Flame className="h-4 w-4" /> CHECK STATUS
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function FormProgress({ steps }: { steps: string[] }) {
+  return (
+    <div className="sticky top-2 z-20 mb-6 flex justify-center">
+      <div className="glass rounded-full px-3 py-2 flex items-center gap-1.5">
+        {steps.map((s, i) => (
+          <span
+            key={i}
+            className="h-7 w-7 rounded-full flex items-center justify-center text-xs border border-white/10"
+            style={{ background: "oklch(1 0 0 / 0.04)" }}
+            aria-hidden
+          >
+            {s}
+          </span>
+        ))}
       </div>
     </div>
   );
