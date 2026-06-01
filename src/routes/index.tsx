@@ -431,10 +431,41 @@ function Index() {
         )}
 
         {/* FOOTER */}
-        <footer className="px-6 py-10 border-t border-border text-center text-xs text-muted-foreground">
+        <footer className="px-6 py-10 pb-28 sm:pb-10 border-t border-border text-center text-xs text-muted-foreground">
           <p>Built with caffeine, regret, and zero academic credentials.</p>
           <p className="mt-1">Not affiliated with any university, exam board, or Jazz himself.</p>
         </footer>
+      </div>
+
+      {/* Sticky mobile CTA */}
+      {showStickyCTA && stage === "form" && (
+        <div className="fixed bottom-4 inset-x-4 z-40 sm:hidden animate-fade-in">
+          <button
+            onClick={() => formRef.current?.scrollIntoView({ behavior: "smooth" })}
+            className="btn-fire w-full py-4 rounded-2xl text-sm inline-flex items-center justify-center gap-2"
+          >
+            <Flame className="h-4 w-4" /> CHECK STATUS
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function FormProgress({ steps }: { steps: string[] }) {
+  return (
+    <div className="sticky top-2 z-20 mb-6 flex justify-center">
+      <div className="glass rounded-full px-3 py-2 flex items-center gap-1.5">
+        {steps.map((s, i) => (
+          <span
+            key={i}
+            className="h-7 w-7 rounded-full flex items-center justify-center text-xs border border-white/10"
+            style={{ background: "oklch(1 0 0 / 0.04)" }}
+            aria-hidden
+          >
+            {s}
+          </span>
+        ))}
       </div>
     </div>
   );
