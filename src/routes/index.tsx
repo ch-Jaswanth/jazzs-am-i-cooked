@@ -117,6 +117,8 @@ function Index() {
     const r = computeResult(inputs);
     setResult(r);
     setStage("result");
+    setConfettiOn(true);
+    setTimeout(() => setConfettiOn(false), 3200);
     setTimeout(() => resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
   };
 
