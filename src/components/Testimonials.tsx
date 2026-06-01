@@ -1,7 +1,7 @@
 const QUOTES = [
   {
-    quote: "I got 92% cooked and still passed somehow. Jazz lied. I love him.",
-    name: "Rohit",
+    quote: "I got 92% cooked and still passed somehow. Jazz lied.",
+    name: "Riya",
     sub: "B.Tech, 6th sem",
   },
   {
